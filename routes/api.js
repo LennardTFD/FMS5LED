@@ -3,7 +3,7 @@ var PINS = require("../Constants");
 var Gpio = require('onoff').Gpio; //require onoff to control GPIO
 var router = express.Router();
 
-var LEDPins = {};
+var LEDPins = LEDPins = {RED: new Gpio(PINS.RED, 'out'), GREEN: new Gpio(PINS.GREEN, 'out'), BLUE: new Gpio(PINS.BLUE, 'out')};
 var LEDPreset = PINS.PRESET;
 var timeout;
 
@@ -15,6 +15,7 @@ function init() {
 function deinit()
 {
     for(var pin in LEDPreset) {
+        console.log("Unexporting", pin);
         LEDPins[pin].unexport();
     }
 }
@@ -33,6 +34,7 @@ setInterval(function() {
 
 function animate()
 {
+    //init();
     switchOffPreset();
     setTimeout(function() {switchOnPreset()}, 200);
     setTimeout(function() {switchOffPreset()}, 400);
@@ -41,16 +43,16 @@ function animate()
 
 function switchOffPreset()
 {
-    /*
+
     for(var pin in LEDPreset) {
-        //LEDPins[pin].writeSync(1);
-        LEDPreset[pin].unexport();
+        LEDPins[pin].writeSync(1);
+        //LEDPreset[pin].unexport();
     }
 
-     */
+
     //LEDPins.POWER.writeSync(1);
 
-    deinit();
+    //deinit();
 }
 
 function parseStatus(status) {
@@ -77,9 +79,10 @@ function blue(status) {
 
 function switchOnPreset()
 {
-    init();
+    //init();
     for(var pin in LEDPreset) {
-        if(!LEDPreset[pin]) LEDPins[pin].unexport();
+        //console.log(pin, LEDPreset[pin]);
+        if(!LEDPreset[pin]) LEDPins[pin].writeSync(1);
         LEDPins[pin].writeSync(0);
     }
 }
