@@ -47,11 +47,6 @@ function switchOffPreset()
         LEDPins[pin].writeSync(1);
         //LEDPreset[pin].unexport();
     }
-
-
-    //LEDPins.POWER.writeSync(1);
-
-    deinit();
 }
 
 function parseStatus(status) {
@@ -78,7 +73,7 @@ function blue(status) {
 
 function switchOnPreset()
 {
-    init();
+    //init();
     for(var pin in LEDPreset) {
         //console.log(pin, LEDPreset[pin]);
         if(!LEDPreset[pin]) {LEDPins[pin].writeSync(1); continue;};
@@ -110,7 +105,8 @@ router.post("/on", function (req, res, next) {
 router.post("/off", function (req, res, next) {
     console.log("LEDs are off");
     timeout = (new Date()).getTime();
-    switchOffPreset();
+    //switchOffPreset();
+    deinit();
     res.status(200);
     res.send();
 });
