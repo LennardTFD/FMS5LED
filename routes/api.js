@@ -3,30 +3,29 @@ var PINS = require("../Constants");
 var Gpio = require('onoff').Gpio; //require onoff to control GPIO
 var router = express.Router();
 
-
-var LEDPins = {RED: new Gpio(PINS.RED, 'out'), GREEN: new Gpio(PINS.GREEN, 'out'), BLUE: new Gpio(PINS.BLUE, 'out')};
+var LEDPins = {};
 var LEDPreset = PINS.PRESET;
-
 var timeout;
 
-function exportLed()
-{
+function init() {
     LEDPins = {RED: new Gpio(PINS.RED, 'out'), GREEN: new Gpio(PINS.GREEN, 'out'), BLUE: new Gpio(PINS.BLUE, 'out')};
 }
+//init();
 
-function unexportLed()
+function deinit()
 {
     for(var pin in LEDPreset) {
         LEDPins[pin].unexport();
     }
 }
 
+//Timeout
 setInterval(function() {
     var time = (new Date()).getTime();
     if(time - timeout >= 1000*60*5)
     {
         console.log("Switching off due to inactivity");
-        switchOn();
+        switchOnPreset();
     }else {
     console.log("Still active");}
 
@@ -34,19 +33,24 @@ setInterval(function() {
 
 function animate()
 {
-    switchOff();
-    setTimeout(function() {switchOn()}, 200);
-    setTimeout(function() {switchOff()}, 400);
-    setTimeout(function() {switchOn()}, 600);
+    switchOffPreset();
+    setTimeout(function() {switchOnPreset()}, 200);
+    setTimeout(function() {switchOffPreset()}, 400);
+    setTimeout(function() {switchOnPreset()}, 600);
 }
 
-function switchOff()
+function switchOffPreset()
 {
+    /*
     for(var pin in LEDPreset) {
-        LEDPins[pin].writeSync(1);
+        //LEDPins[pin].writeSync(1);
+        LEDPreset[pin].unexport();
     }
-    unexportLed();
+
+     */
     //LEDPins.POWER.writeSync(1);
+
+    deinit();
 }
 
 function parseStatus(status) {
@@ -71,14 +75,13 @@ function blue(status) {
     LEDPins.BLUE.writeSync(parseStatus(status))
 }
 
-function switchOn()
+function switchOnPreset()
 {
+    init();
     for(var pin in LEDPreset) {
-        if(!LEDPreset[pin]) continue;
+        if(!LEDPreset[pin]) LEDPins[pin].unexport();
         LEDPins[pin].writeSync(0);
     }
-    exportLed();
-    //LEDPins.POWER.writeSync(0);
 }
 
 /* GET users listing. */
@@ -105,7 +108,7 @@ router.post("/on", function (req, res, next) {
 router.post("/off", function (req, res, next) {
     console.log("LEDs are off");
     timeout = (new Date()).getTime();
-    switchOff();
+    switchOffPreset();
     res.status(200);
     res.send();
 });
