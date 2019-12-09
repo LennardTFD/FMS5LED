@@ -15,7 +15,7 @@ setInterval(function() {
     if(time - timeout >= 1000*60*5)
     {
         console.log("Switching off due to inactivity");
-        switchOff();
+        switchOn();
     }else {
     console.log("Still active");}
 
@@ -23,25 +23,25 @@ setInterval(function() {
 
 function animate()
 {
-    switchOn();
-    setTimeout(function() {switchOff()}, 200);
-    setTimeout(function() {switchOn()}, 400);
-}
-
-function switchOn()
-{
-    for(var pin in LEDPreset) {
-        LEDPins[pin].writeSync(1);
-    }
-    LEDPins.POWER.writeSync(1);
+    switchOff();
+    setTimeout(function() {switchOn()}, 200);
+    setTimeout(function() {switchOff()}, 400);
 }
 
 function switchOff()
 {
     for(var pin in LEDPreset) {
+        LEDPins[pin].writeSync(1);
+    }
+    //LEDPins.POWER.writeSync(1);
+}
+
+function switchOn()
+{
+    for(var pin in LEDPreset) {
         LEDPins[pin].writeSync(0);
     }
-    LEDPins.POWER.writeSync(0);
+    //LEDPins.POWER.writeSync(0);
 }
 
 /* GET users listing. */
@@ -56,19 +56,19 @@ router.post("/deadmanswitch", function (req, res, next) {
     res.send();
 });
 
-router.post("/on", function (req, res, next) {
+router.post("/off", function (req, res, next) {
     //switchOn();
-    console.log("LEDs are on");
+    console.log("LEDs are off");
     timeout = (new Date()).getTime();
-    //animate();
+    animate();
     res.status(200);
     res.send();
 });
 
-router.post("/off", function (req, res, next) {
-    console.log("LEDs are off");
+router.post("/on", function (req, res, next) {
+    console.log("LEDs are on");
     timeout = (new Date()).getTime();
-    //switchOff();
+    switchOn();
     res.status(200);
     res.send();
 });

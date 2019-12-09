@@ -1,8 +1,7 @@
 var PINS = {
-    RED: 35,
-    BLUE: 37,
-    GREEN: 33,
-    POWER: 31,
+    RED: 27,
+    BLUE: 3,
+    GREEN: 15,
     PRESET: {RED: true, GREEN: false, BLUE: false}
 };
 
