@@ -3,7 +3,7 @@ var PINS = require("../Constants");
 var Gpio = require('onoff').Gpio; //require onoff to control GPIO
 var router = express.Router();
 
-var LEDPins = {RED: new Gpio(PINS.RED, 'out'), GREEN: new Gpio(PINS.GREEN, 'out'), BLUE: new Gpio(PINS.BLUE, 'out')};
+var LEDPins = {};
 var LEDPreset = PINS.PRESET;
 var timeout;
 
@@ -17,6 +17,7 @@ function deinit()
     for(var pin in LEDPreset) {
         LEDPins[pin].unexport();
     }
+    LEDPins = {};
 }
 
 //Timeout
@@ -25,7 +26,10 @@ setInterval(function() {
     if(time - timeout >= 1000*60*5)
     {
         console.log("Switching off due to inactivity");
-        switchOnPreset();
+        if(Object.keys(LEDPins).length > 0)
+        {
+            deinit();
+        }
     }else {
     console.log("Still active");}
 
@@ -33,7 +37,10 @@ setInterval(function() {
 
 function animate()
 {
-    init();
+    if(Object.keys(LEDPins).length < 1)
+    {
+        init();
+    }
     switchOffPreset();
     setTimeout(function() {switchOnPreset()}, 200);
     setTimeout(function() {switchOffPreset()}, 400);

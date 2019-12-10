@@ -1,18 +1,18 @@
 // ==UserScript==
 // @name         FMS 5 LED Plugin
 // @namespace    https://leitstellenspiel.de
-// @version      0.1
+// @version      1.0
 // @description  Activates LED on FMS5
 // @author       Lennard[TFD]
 // @match        https://www.leitstellenspiel.de/
 // @match        https://www.missionchief.com/
 // @match        https://www.meldkamerspel.com/
-// @updateURL    https://github.com/LennardTFD/LeitstellenspielScripte/raw/master/LSS_AllianceBuildingHider/allianceBuildingHider.user.js
-// @downloadURL  https://github.com/LennardTFD/LeitstellenspielScripte/raw/master/LSS_AllianceBuildingHider/allianceBuildingHider.user.js
+// @updateURL    https://github.com/LennardTFD/FMS5LED/raw/master/fmsled.user.js
+// @downloadURL  https://github.com/LennardTFD/FMS5LED/raw/master/fmsled.user.js
 // @grant        none
 // ==/UserScript==
 
-var LEDLocation = "localhost:3000";
+var LEDLocation = "http://raspi:3000";
 
 function switchLed(status) {
     if (status == "on") {
